@@ -4,11 +4,10 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 import 'package:onion/main.dart';
 import 'package:onion/colors.dart';
-import 'package:onion/layout/image_placeholder.dart';
-import 'package:onion/layout/adaptive.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -67,50 +66,27 @@ class _MainView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDesktop = isDisplayDesktop(context);
     List<Widget> listViewChildren;
-
-    if (isDesktop) {
-      // final desktopMaxWidth = 400.0 + 100.0 * (cappedTextScale(context) - 1);
-      final desktopMaxWidth = 900.0;
-      listViewChildren = [
-        _UsernameInput(
-          maxWidth: desktopMaxWidth,
-          usernameController: usernameController,
-        ),
-        const SizedBox(height: 12),
-        _PasswordInput(
-          maxWidth: desktopMaxWidth,
-          passwordController: passwordController,
-        ),
-        _LoginButton(
-          maxWidth: desktopMaxWidth,
-          onTap: () {
-            _login(context);
-          },
-        ),
-      ];
-    } else {
-      listViewChildren = [
-        const _SmallLogo(),
-        _UsernameInput(
-          usernameController: usernameController,
-        ),
-        const SizedBox(height: 12),
-        _PasswordInput(
-          passwordController: passwordController,
-        ),
-        _ThumbButton(
-          onTap: () {
-            _login(context);
-          },
-        ),
-      ];
-    }
+    listViewChildren = [
+      _UsernameInput(
+        usernameController: usernameController,
+      ),
+      const SizedBox(height: 12),
+      _PasswordInput(
+        passwordController: passwordController,
+      ),
+      // _ThumbButton(
+      //   onTap: () {
+      //     _login(context);
+      //   },
+      // ),
+      _LoginButton(onTap: () {
+        _login(context);
+      })
+    ];
 
     return Column(
       children: [
-        // if (isDesktop) const _TopBar(),
         Expanded(
           child: Align(
             // alignment: isDesktop ? Alignment.center : Alignment.topCenter,
@@ -124,89 +100,6 @@ class _MainView extends StatelessWidget {
           ),
         ),
       ],
-    );
-  }
-}
-
-class _TopBar extends StatelessWidget {
-  const _TopBar();
-
-  @override
-  Widget build(BuildContext context) {
-    const spacing = SizedBox(width: 30);
-    // final localizations = GalleryLocalizations.of(context)!;
-    return Container(
-      width: double.infinity,
-      margin: const EdgeInsets.only(top: 8),
-      padding: const EdgeInsets.symmetric(horizontal: 30),
-      child: Wrap(
-        alignment: WrapAlignment.spaceBetween,
-        children: [
-          Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              ExcludeSemantics(
-                child: SizedBox(
-                  height: 80,
-                  child: FadeInImagePlaceholder(
-                    image:
-                        const AssetImage('logo.png', package: 'rally_assets'),
-                    placeholder: LayoutBuilder(builder: (context, constraints) {
-                      return SizedBox(
-                        width: constraints.maxHeight,
-                        height: constraints.maxHeight,
-                      );
-                    }),
-                  ),
-                ),
-              ),
-              spacing,
-              Text(
-                // localizations.rallyLoginLoginToRally,
-                "Login",
-                // style: Theme.of(context).textTheme.bodyText1!.copyWith(
-                //       fontSize: 35 / reducedTextScale(context),
-                //       fontWeight: FontWeight.w600,
-                //     ),
-              ),
-            ],
-          ),
-          Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                // localizations.rallyLoginNoAccount,
-                "No Account",
-                style: Theme.of(context).textTheme.subtitle1,
-              ),
-              spacing,
-              _BorderButton(
-                  // text: localizations.rallyLoginSignUp,
-                  text: "Login"),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _SmallLogo extends StatelessWidget {
-  const _SmallLogo();
-
-  @override
-  Widget build(BuildContext context) {
-    return const Padding(
-      padding: EdgeInsets.symmetric(vertical: 64),
-      child: SizedBox(
-        height: 160,
-        child: ExcludeSemantics(
-          child: FadeInImagePlaceholder(
-            image: AssetImage('assets/images/logo.png'),
-            placeholder: SizedBox.shrink(),
-          ),
-        ),
-      ),
     );
   }
 }
