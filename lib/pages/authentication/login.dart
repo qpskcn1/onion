@@ -60,8 +60,19 @@ class _MainView extends StatelessWidget {
   final TextEditingController? usernameController;
   final TextEditingController? passwordController;
 
-  void _login(BuildContext context) {
-    Navigator.of(context).restorablePushNamed(OnionApp.homeRoute);
+  void _login(BuildContext context) async {
+    try {
+      final credential = await FirebaseAuth.instance.signInWithEmailAndPassword(
+          email: usernameController!.text, password: passwordController!.text);
+      print(credential);
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'user-not-found') {
+        print('No user found for that email.');
+      } else if (e.code == 'wrong-password') {
+        print('Wrong password provided for that user.');
+      }
+    }
+    // Navigator.of(context).restorablePushNamed(OnionApp.homeRoute);
   }
 
   @override
